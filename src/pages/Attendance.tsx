@@ -50,10 +50,21 @@ const Attendance = () => {
     const section = classId.charAt(1);
     const foundClass = classes.find(c => c.grade === grade && c.section === section);
 
-    if (!foundClass || !foundClass.isDownloaded) {
+    if (!foundClass) {
       toast({
         title: "Class Not Found",
-        description: "Please download the class first",
+        description: "Class data not available",
+        variant: "destructive"
+      });
+      navigate('/home');
+      return;
+    }
+
+    // In offline mode, class must be downloaded
+    if (!isOnline && !foundClass.isDownloaded) {
+      toast({
+        title: "Download Required",
+        description: "Please download the class for offline use",
         variant: "destructive"
       });
       navigate('/home');
