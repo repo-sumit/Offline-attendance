@@ -186,7 +186,7 @@ const Attendance = () => {
                 variant={student.isPresent ? "default" : "outline"}
                 size="lg"
                 className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 ${
-                  student.isPresent ? 'bg-green-600 hover:bg-green-700' : ''
+                  student.isPresent ? 'bg-blue-600 hover:bg-blue-700' : ''
                 }`}
                 onClick={(e) => {
                   e.stopPropagation();
