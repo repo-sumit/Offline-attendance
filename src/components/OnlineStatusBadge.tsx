@@ -6,7 +6,10 @@ export const OnlineStatusBadge = () => {
   const isOnline = useOnlineStatus();
 
   return (
-    <Badge variant={isOnline ? "default" : "secondary"} className="gap-1.5">
+    <Badge 
+      variant={isOnline ? "default" : "destructive"} 
+      className={isOnline ? "bg-success hover:bg-success/80" : ""}
+    >
       {isOnline ? (
         <>
           <Wifi className="h-3 w-3" />

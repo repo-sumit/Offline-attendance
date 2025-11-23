@@ -160,12 +160,14 @@ const Home = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {isOnline ? (
-                    <Wifi className="h-3 w-3 md:h-4 md:w-4" />
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                   ) : (
-                    <WifiOff className="h-3 w-3 md:h-4 md:w-4" />
+                    <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
                   )}
                   <Label htmlFor="mode-toggle" className="cursor-pointer font-medium text-xs md:text-sm">
-                    {isOnline ? 'Online Mode' : 'Offline Mode'} (Demo)
+                    <span className={isOnline ? 'text-success' : 'text-destructive'}>
+                      {isOnline ? 'Online' : 'Offline'}
+                    </span> Mode (Demo)
                   </Label>
                 </div>
                 <Switch
@@ -184,7 +186,10 @@ const Home = () => {
                   <p className="text-xs md:text-sm opacity-90">School</p>
                   <p className="font-semibold text-sm md:text-base">{school.name}</p>
                 </div>
-                <Badge variant={isOnline ? "default" : "secondary"} className="gap-1 md:gap-1.5 text-xs">
+                <Badge 
+                  variant={isOnline ? "default" : "destructive"}
+                  className={`gap-1 md:gap-1.5 text-xs ${isOnline ? 'bg-success hover:bg-success/80' : ''}`}
+                >
                   {isOnline ? (
                     <>
                       <Wifi className="h-3 w-3" />
