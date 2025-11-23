@@ -165,7 +165,7 @@ const Home = () => {
                     <div className="w-2 h-2 rounded-full bg-destructive animate-pulse" />
                   )}
                   <Label htmlFor="mode-toggle" className="cursor-pointer font-medium text-xs md:text-sm">
-                    <span className={isOnline ? 'text-success' : 'text-destructive'}>
+                    <span className={isOnline ? 'text-foreground' : 'text-destructive'}>
                       {isOnline ? 'Online' : 'Offline'}
                     </span> Mode (Demo)
                   </Label>
