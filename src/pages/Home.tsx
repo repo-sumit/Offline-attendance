@@ -115,6 +115,16 @@ const Home = () => {
 
   const downloadedClasses = classes.filter(c => c.isDownloaded);
   const notDownloadedClasses = classes.filter(c => !c.isDownloaded);
+  
+  // In online mode: show all classes in ascending order
+  // In offline mode: show downloaded first, then not downloaded
+  const displayClasses = isOnline 
+    ? [...classes].sort((a, b) => {
+        const orderA = `${a.grade}${a.section}`;
+        const orderB = `${b.grade}${b.section}`;
+        return orderA.localeCompare(orderB);
+      })
+    : [...downloadedClasses, ...notDownloadedClasses];
 
   const toggleOnlineMode = () => {
     setIsOnline(!isOnline);
@@ -207,28 +217,33 @@ const Home = () => {
       <div className="max-w-2xl mx-auto p-3 md:p-4 space-y-3 md:space-y-4">
         <h2 className="text-base md:text-lg font-semibold">Your Classes</h2>
         
-        {/* Downloaded Classes */}
-        {downloadedClasses.map(classItem => {
+        {/* All Classes */}
+        {displayClasses.map(classItem => {
           const classId = `${classItem.grade}${classItem.section}`;
           const isLoading = loadingClass === classId;
+          const isDownloaded = classItem.isDownloaded;
           
           return (
-            <Card key={classId} className="overflow-hidden border-primary/20">
+            <Card key={classId} className={`overflow-hidden ${isDownloaded ? 'border-primary/20' : ''} ${!isOnline && !isDownloaded ? 'opacity-50' : ''}`}>
               <CardContent className="p-3 md:p-4">
                 <div className="flex items-center justify-between mb-3 md:mb-4">
                   <div className="flex items-center gap-2 md:gap-3">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <span className="text-base md:text-lg font-bold text-primary">{classId}</span>
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg ${isDownloaded ? 'bg-primary/10' : 'bg-muted'} flex items-center justify-center`}>
+                      <span className={`text-base md:text-lg font-bold ${isDownloaded ? 'text-primary' : 'text-muted-foreground'}`}>{classId}</span>
                     </div>
                     <div>
                       <p className="font-semibold text-sm md:text-base">Class {classId}</p>
-                      <p className="text-xs md:text-sm text-muted-foreground">
-                        {classItem.students.length} students
-                      </p>
+                      {isDownloaded ? (
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          {classItem.students.length} students
+                        </p>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs">Not Downloaded</Badge>
+                      )}
                     </div>
                   </div>
                   
-                  {isOnline && (
+                  {isDownloaded && isOnline ? (
                     <Button
                       variant="ghost"
                       size="sm"
@@ -242,6 +257,25 @@ const Home = () => {
                         <RefreshCw className="h-3 w-3 md:h-4 md:w-4" />
                       )}
                     </Button>
+                  ) : !isDownloaded && (
+                    <Button
+                      size="sm"
+                      onClick={() => handleDownload(classId)}
+                      disabled={!isOnline || isLoading}
+                      className="text-xs md:text-sm h-8 md:h-9"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                          <span className="hidden sm:inline">Downloading</span>
+                        </>
+                      ) : (
+                        <>
+                          <Download className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
+                          Download
+                        </>
+                      )}
+                    </Button>
                   )}
                 </div>
                 
@@ -249,6 +283,7 @@ const Home = () => {
                   <Button
                     className="w-full h-10 md:h-11 text-sm md:text-base"
                     onClick={() => navigate(`/attendance/${classId}`)}
+                    disabled={!isOnline && !isDownloaded}
                   >
                     Mark Attendance
                   </Button>
@@ -256,68 +291,7 @@ const Home = () => {
                     className="w-full h-10 md:h-11 text-sm md:text-base"
                     variant="outline"
                     onClick={() => navigate(`/meal-attendance/${classId}`)}
-                  >
-                    <UtensilsCrossed className="mr-2 h-3 w-3 md:h-4 md:w-4" />
-                    Mark Meal Attendance
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-        
-        {/* Not Downloaded Classes */}
-        {notDownloadedClasses.map(classItem => {
-          const classId = `${classItem.grade}${classItem.section}`;
-          const isLoading = loadingClass === classId;
-          
-          return (
-            <Card key={classId} className={!isOnline ? "opacity-50" : ""}>
-              <CardContent className="p-3 md:p-4">
-                <div className="flex items-center justify-between mb-3 md:mb-4">
-                  <div className="flex items-center gap-2 md:gap-3">
-                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-muted flex items-center justify-center">
-                      <span className="text-base md:text-lg font-bold text-muted-foreground">{classId}</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm md:text-base">Class {classId}</p>
-                      <Badge variant="secondary" className="text-xs">Not Downloaded</Badge>
-                    </div>
-                  </div>
-                  
-                  <Button
-                    size="sm"
-                    onClick={() => handleDownload(classId)}
-                    disabled={!isOnline || isLoading}
-                    className="text-xs md:text-sm h-8 md:h-9"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 animate-spin" />
-                        <span className="hidden sm:inline">Downloading</span>
-                      </>
-                    ) : (
-                      <>
-                        <Download className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
-                        Download
-                      </>
-                    )}
-                  </Button>
-                </div>
-                
-                <div className="space-y-2">
-                  <Button
-                    className="w-full h-10 md:h-11 text-sm md:text-base"
-                    onClick={() => navigate(`/attendance/${classId}`)}
-                    disabled={!isOnline}
-                  >
-                    Mark Attendance
-                  </Button>
-                  <Button
-                    className="w-full h-10 md:h-11 text-sm md:text-base"
-                    variant="outline"
-                    onClick={() => navigate(`/meal-attendance/${classId}`)}
-                    disabled={!isOnline}
+                    disabled={!isOnline && !isDownloaded}
                   >
                     <UtensilsCrossed className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                     Mark Meal Attendance
