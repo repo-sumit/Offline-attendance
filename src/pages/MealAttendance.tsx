@@ -137,39 +137,39 @@ const MealAttendance = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-4 sticky top-0 z-10 shadow-md">
-        <div className="max-w-2xl mx-auto space-y-3">
-          <div className="flex items-center gap-3">
+      <div className="bg-primary text-primary-foreground p-3 md:p-4 sticky top-0 z-10 shadow-md">
+        <div className="max-w-2xl mx-auto space-y-2 md:space-y-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate('/home')}
-              className="text-primary-foreground hover:bg-primary-foreground/10"
+              className="text-primary-foreground hover:bg-primary-foreground/10 h-8 w-8 md:h-9 md:w-9 p-0"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-3 w-3 md:h-4 md:w-4" />
             </Button>
             <div className="flex-1">
-              <h1 className="text-xl font-bold flex items-center gap-2">
-                <UtensilsCrossed className="h-5 w-5" />
+              <h1 className="text-base md:text-xl font-bold flex items-center gap-2">
+                <UtensilsCrossed className="h-4 w-4 md:h-5 md:w-5" />
                 Class {classId} Meal
               </h1>
-              <p className="text-sm opacity-90">{school.name}</p>
+              <p className="text-xs md:text-sm opacity-90">{school.name}</p>
             </div>
             <OnlineStatusBadge />
           </div>
 
-          <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center justify-between text-xs md:text-sm">
             <span>Teacher: {teacher.name}</span>
             <span>{format(new Date(), 'dd MMM yyyy')}</span>
           </div>
 
-          <div className="flex gap-4 text-sm bg-primary-foreground/10 p-2 rounded">
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4" />
+          <div className="flex gap-3 md:gap-4 text-xs md:text-sm bg-primary-foreground/10 p-2 rounded">
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <Check className="h-3 w-3 md:h-4 md:w-4" />
               Had Meal: {mealCount}
             </div>
-            <div className="flex items-center gap-2">
-              <X className="h-4 w-4" />
+            <div className="flex items-center gap-1.5 md:gap-2">
+              <X className="h-3 w-3 md:h-4 md:w-4" />
               No Meal: {noMealCount}
             </div>
           </div>
@@ -177,18 +177,18 @@ const MealAttendance = () => {
       </div>
 
       {/* Student List */}
-      <div className="max-w-2xl mx-auto p-4 space-y-2">
+      <div className="max-w-2xl mx-auto p-3 md:p-4 space-y-2">
         {students.map((student) => (
           <Card
             key={student.id}
-            className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+            className="p-3 md:p-4 cursor-pointer hover:shadow-md transition-shadow active:scale-98"
             onClick={() => toggleMeal(student.id)}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 md:gap-4">
               <Button
                 variant={student.hasMeal ? "default" : "outline"}
                 size="lg"
-                className={`w-16 h-16 rounded-full ${
+                className={`w-14 h-14 md:w-16 md:h-16 rounded-full flex-shrink-0 ${
                   student.hasMeal ? 'bg-orange-600 hover:bg-orange-700' : ''
                 }`}
                 onClick={(e) => {
@@ -197,14 +197,14 @@ const MealAttendance = () => {
                 }}
               >
                 {student.hasMeal ? (
-                  <Check className="h-6 w-6" />
+                  <Check className="h-5 w-5 md:h-6 md:w-6" />
                 ) : (
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5 md:h-6 md:w-6" />
                 )}
               </Button>
-              <div className="flex-1">
-                <p className="font-semibold">{student.name}</p>
-                <p className="text-sm text-muted-foreground font-mono">{student.id}</p>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm md:text-base truncate">{student.name}</p>
+                <p className="text-xs md:text-sm text-muted-foreground font-mono">{student.id}</p>
               </div>
             </div>
           </Card>
@@ -212,21 +212,21 @@ const MealAttendance = () => {
       </div>
 
       {/* Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-3 md:p-4 shadow-lg">
         <div className="max-w-2xl mx-auto flex gap-2">
           <Button
             variant="outline"
-            className="flex-1"
+            className="flex-1 h-11 md:h-12 text-sm md:text-base"
             onClick={() => setShowDiscardDialog(true)}
           >
             Discard
           </Button>
           <Button
-            className="flex-1"
+            className="flex-1 h-11 md:h-12 text-sm md:text-base"
             onClick={() => setShowSubmitDialog(true)}
             disabled={isSubmitting}
           >
-            {!isOnline && <Upload className="mr-2 h-4 w-4" />}
+            {!isOnline && <Upload className="mr-2 h-3 w-3 md:h-4 md:w-4" />}
             Submit
           </Button>
         </div>
