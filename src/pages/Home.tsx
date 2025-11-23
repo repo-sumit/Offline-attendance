@@ -129,32 +129,32 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-4 sticky top-0 z-10 shadow-md">
-        <div className="max-w-2xl mx-auto space-y-3">
+      <div className="bg-primary text-primary-foreground p-3 md:p-4 sticky top-0 z-10 shadow-md">
+        <div className="max-w-2xl mx-auto space-y-2 md:space-y-3">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold">Attendance</h1>
+            <h1 className="text-lg md:text-xl font-bold">Attendance</h1>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={handleLogout}
-              className="text-primary-foreground hover:bg-primary-foreground/10"
+              className="text-primary-foreground hover:bg-primary-foreground/10 text-xs md:text-sm"
             >
-              <LogOut className="h-4 w-4 mr-2" />
+              <LogOut className="h-3 w-3 md:h-4 md:w-4 mr-1 md:mr-2" />
               Logout
             </Button>
           </div>
 
           {/* Demo Mode Toggle */}
           <Card className="bg-primary-foreground/10 border-none">
-            <CardContent className="p-3">
+            <CardContent className="p-2 md:p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {isOnline ? (
-                    <Wifi className="h-4 w-4" />
+                    <Wifi className="h-3 w-3 md:h-4 md:w-4" />
                   ) : (
-                    <WifiOff className="h-4 w-4" />
+                    <WifiOff className="h-3 w-3 md:h-4 md:w-4" />
                   )}
-                  <Label htmlFor="mode-toggle" className="cursor-pointer font-medium">
+                  <Label htmlFor="mode-toggle" className="cursor-pointer font-medium text-xs md:text-sm">
                     {isOnline ? 'Online Mode' : 'Offline Mode'} (Demo)
                   </Label>
                 </div>
@@ -168,13 +168,13 @@ const Home = () => {
           </Card>
           
           <Card className="bg-primary-foreground/10 border-none">
-            <CardContent className="p-3 space-y-2">
+            <CardContent className="p-2 md:p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm opacity-90">School</p>
-                  <p className="font-semibold">{school.name}</p>
+                  <p className="text-xs md:text-sm opacity-90">School</p>
+                  <p className="font-semibold text-sm md:text-base">{school.name}</p>
                 </div>
-                <Badge variant={isOnline ? "default" : "secondary"} className="gap-1.5">
+                <Badge variant={isOnline ? "default" : "secondary"} className="gap-1 md:gap-1.5 text-xs">
                   {isOnline ? (
                     <>
                       <Wifi className="h-3 w-3" />
@@ -188,7 +188,7 @@ const Home = () => {
                   )}
                 </Badge>
               </div>
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs md:text-sm">
                 <div>
                   <span className="opacity-90">Teacher: </span>
                   <span className="font-medium">{teacher.name}</span>
@@ -204,8 +204,8 @@ const Home = () => {
       </div>
 
       {/* Class List */}
-      <div className="max-w-2xl mx-auto p-4 space-y-4">
-        <h2 className="text-lg font-semibold">Your Classes</h2>
+      <div className="max-w-2xl mx-auto p-3 md:p-4 space-y-3 md:space-y-4">
+        <h2 className="text-base md:text-lg font-semibold">Your Classes</h2>
         
         {/* Downloaded Classes */}
         {downloadedClasses.map(classItem => {
@@ -214,15 +214,15 @@ const Home = () => {
           
           return (
             <Card key={classId} className="overflow-hidden border-primary/20">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <span className="text-lg font-bold text-primary">{classId}</span>
+              <CardContent className="p-3 md:p-4">
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <span className="text-base md:text-lg font-bold text-primary">{classId}</span>
                     </div>
                     <div>
-                      <p className="font-semibold">Class {classId}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-semibold text-sm md:text-base">Class {classId}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">
                         {classItem.students.length} students
                       </p>
                     </div>
@@ -234,11 +234,12 @@ const Home = () => {
                       size="sm"
                       onClick={() => handleDownload(classId)}
                       disabled={isLoading}
+                      className="h-8 w-8 md:h-9 md:w-9 p-0"
                     >
                       {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
                       ) : (
-                        <RefreshCw className="h-4 w-4" />
+                        <RefreshCw className="h-3 w-3 md:h-4 md:w-4" />
                       )}
                     </Button>
                   )}
@@ -246,17 +247,17 @@ const Home = () => {
                 
                 <div className="space-y-2">
                   <Button
-                    className="w-full"
+                    className="w-full h-10 md:h-11 text-sm md:text-base"
                     onClick={() => navigate(`/attendance/${classId}`)}
                   >
                     Mark Attendance
                   </Button>
                   <Button
-                    className="w-full"
+                    className="w-full h-10 md:h-11 text-sm md:text-base"
                     variant="outline"
                     onClick={() => navigate(`/meal-attendance/${classId}`)}
                   >
-                    <UtensilsCrossed className="mr-2 h-4 w-4" />
+                    <UtensilsCrossed className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                     Mark Meal Attendance
                   </Button>
                 </div>
@@ -272,14 +273,14 @@ const Home = () => {
           
           return (
             <Card key={classId} className={!isOnline ? "opacity-50" : ""}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
-                      <span className="text-lg font-bold text-muted-foreground">{classId}</span>
+              <CardContent className="p-3 md:p-4">
+                <div className="flex items-center justify-between mb-3 md:mb-4">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-muted flex items-center justify-center">
+                      <span className="text-base md:text-lg font-bold text-muted-foreground">{classId}</span>
                     </div>
                     <div>
-                      <p className="font-semibold">Class {classId}</p>
+                      <p className="font-semibold text-sm md:text-base">Class {classId}</p>
                       <Badge variant="secondary" className="text-xs">Not Downloaded</Badge>
                     </div>
                   </div>
@@ -288,15 +289,16 @@ const Home = () => {
                     size="sm"
                     onClick={() => handleDownload(classId)}
                     disabled={!isOnline || isLoading}
+                    className="text-xs md:text-sm h-8 md:h-9"
                   >
                     {isLoading ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Downloading
+                        <Loader2 className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                        <span className="hidden sm:inline">Downloading</span>
                       </>
                     ) : (
                       <>
-                        <Download className="mr-2 h-4 w-4" />
+                        <Download className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
                         Download
                       </>
                     )}
@@ -305,19 +307,19 @@ const Home = () => {
                 
                 <div className="space-y-2">
                   <Button
-                    className="w-full"
+                    className="w-full h-10 md:h-11 text-sm md:text-base"
                     onClick={() => navigate(`/attendance/${classId}`)}
                     disabled={!isOnline}
                   >
                     Mark Attendance
                   </Button>
                   <Button
-                    className="w-full"
+                    className="w-full h-10 md:h-11 text-sm md:text-base"
                     variant="outline"
                     onClick={() => navigate(`/meal-attendance/${classId}`)}
                     disabled={!isOnline}
                   >
-                    <UtensilsCrossed className="mr-2 h-4 w-4" />
+                    <UtensilsCrossed className="mr-2 h-3 w-3 md:h-4 md:w-4" />
                     Mark Meal Attendance
                   </Button>
                 </div>
