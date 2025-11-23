@@ -1,6 +1,38 @@
-# Welcome to your Lovable project
+# Maharashtra Teacher Attendance App
 
-## Project info
+An offline-capable attendance mini-app for teachers in Maharashtra schools to mark student attendance and meal attendance with seamless online/offline synchronization.
+
+## Features
+
+- **Teacher Authentication**: Secure login with 8-digit Teacher ID
+- **School Verification**: UDISE-based school validation
+- **Class Management**: Download and manage multiple class rosters
+- **Student Attendance**: Quick and intuitive attendance marking
+- **Meal Attendance**: Separate meal tracking for students
+- **Offline-First**: Works seamlessly without internet connection
+- **Auto-Sync**: Automatically uploads pending data when online
+- **Mobile-Optimized**: Designed for mobile devices with touch-friendly interface
+
+## Demo Credentials
+
+Use these credentials to test the application:
+
+- **Teacher ID**: `12345678`
+- **UDISE Code**: `27251234567`
+
+## How to Use
+
+1. **Login**: Enter your 8-digit Teacher ID
+2. **Confirm Details**: Verify your teacher information
+3. **School Verification**: Enter your 11-digit UDISE code
+4. **Confirm School**: Verify school details
+5. **Home Page**: View and download your class rosters
+6. **Mark Attendance**: 
+   - Expand a class to see options
+   - Tap on students to toggle their attendance status
+   - Submit or discard changes
+7. **Offline Mode**: App automatically detects connectivity and works offline
+8. **Sync**: Pending submissions automatically upload when online
 
 **URL**: https://lovable.dev/projects/5128e53d-3da2-4fb5-a891-3892f705181b
 
