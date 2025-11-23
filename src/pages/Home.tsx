@@ -273,7 +273,7 @@ const Home = () => {
           return (
             <Card key={classId} className={!isOnline ? "opacity-50" : ""}>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
                       <span className="text-lg font-bold text-muted-foreground">{classId}</span>
@@ -300,6 +300,25 @@ const Home = () => {
                         Download
                       </>
                     )}
+                  </Button>
+                </div>
+                
+                <div className="space-y-2">
+                  <Button
+                    className="w-full"
+                    onClick={() => navigate(`/attendance/${classId}`)}
+                    disabled={!isOnline}
+                  >
+                    Mark Attendance
+                  </Button>
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => navigate(`/meal-attendance/${classId}`)}
+                    disabled={!isOnline}
+                  >
+                    <UtensilsCrossed className="mr-2 h-4 w-4" />
+                    Mark Meal Attendance
                   </Button>
                 </div>
               </CardContent>
