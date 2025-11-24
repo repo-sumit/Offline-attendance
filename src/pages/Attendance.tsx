@@ -30,58 +30,75 @@ const Attendance = () => {
   const [showSubmitDialog, setShowSubmitDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const isOnline = useOnlineStatus();
   const { toast } = useToast();
 
   useEffect(() => {
-    const savedTeacher = storage.getTeacher();
-    const savedSchool = storage.getSchool();
-    setTeacher(savedTeacher);
-    setSchool(savedSchool);
+    const loadData = async () => {
+      setIsLoading(true);
+      const savedTeacher = storage.getTeacher();
+      const savedSchool = storage.getSchool();
+      setTeacher(savedTeacher);
+      setSchool(savedSchool);
 
-    if (!classId) {
-      navigate('/home');
-      return;
-    }
-
-    const grade = classId.charAt(0);
-    const section = classId.charAt(1);
-    const classes = storage.getClasses();
-    const foundClass = classes.find(c => c.grade === grade && c.section === section);
-
-    // In offline mode, class must be downloaded
-    if (!isOnline) {
-      if (!foundClass || !foundClass.isDownloaded) {
-        toast({
-          title: "Download Required",
-          description: "Please download the class for offline use",
-          variant: "destructive"
-        });
+      if (!classId) {
         navigate('/home');
         return;
       }
-      setClassData(foundClass);
-      setStudents(foundClass.students);
-    } else {
-      // In online mode, fetch students from API if not in storage
-      if (foundClass) {
+
+      const grade = classId.charAt(0);
+      const section = classId.charAt(1);
+      const classes = storage.getClasses();
+      const foundClass = classes.find(c => c.grade === grade && c.section === section);
+
+      // In offline mode, class must be downloaded
+      if (!isOnline) {
+        if (!foundClass || !foundClass.isDownloaded) {
+          toast({
+            title: "Download Required",
+            description: "Please download the class for offline use",
+            variant: "destructive"
+          });
+          navigate('/home');
+          return;
+        }
         setClassData(foundClass);
         setStudents(foundClass.students);
+        setIsLoading(false);
       } else {
-        // Fetch from API
-        mockApi.fetchClassStudents(grade, section).then((fetchedStudents) => {
-          const newClassData: ClassData = {
-            grade,
-            section,
-            students: fetchedStudents,
-            isDownloaded: false
-          };
-          setClassData(newClassData);
-          setStudents(fetchedStudents);
-        });
+        // In online mode, fetch students from API if not in storage
+        if (foundClass) {
+          setClassData(foundClass);
+          setStudents(foundClass.students);
+          setIsLoading(false);
+        } else {
+          // Fetch from API
+          try {
+            const fetchedStudents = await mockApi.fetchClassStudents(grade, section);
+            const newClassData: ClassData = {
+              grade,
+              section,
+              students: fetchedStudents,
+              isDownloaded: false
+            };
+            setClassData(newClassData);
+            setStudents(fetchedStudents);
+          } catch (error) {
+            toast({
+              title: "Error",
+              description: "Failed to load students",
+              variant: "destructive"
+            });
+          } finally {
+            setIsLoading(false);
+          }
+        }
       }
-    }
+    };
+
+    loadData();
   }, [classId, navigate, toast, isOnline]);
 
   const toggleAttendance = (studentId: string) => {
@@ -141,7 +158,18 @@ const Attendance = () => {
   const presentCount = students.filter(s => s.isPresent).length;
   const absentCount = students.length - presentCount;
 
-  if (!classData || !teacher || !school) return null;
+  if (!teacher || !school) return null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-muted-foreground">Loading students...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">
