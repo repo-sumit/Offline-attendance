@@ -7,7 +7,7 @@ import { storage } from '@/lib/storage';
 import { mockApi } from '@/lib/mockData';
 import { Teacher, School, ClassData } from '@/types';
 import { useToast } from '@/hooks/use-toast';
-import { Download, RefreshCw, Loader2, Calendar, LogOut, Wifi, WifiOff, UtensilsCrossed } from 'lucide-react';
+import { Download, RefreshCw, Loader2, Calendar, LogOut, Wifi, WifiOff, UtensilsCrossed, Upload } from 'lucide-react';
 import { format } from 'date-fns';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -18,6 +18,8 @@ const Home = () => {
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [loadingClass, setLoadingClass] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(() => storage.getOnlineMode());
+  const [pendingCount, setPendingCount] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -38,8 +40,16 @@ const Home = () => {
       } else {
         initializeClasses();
       }
+      
+      // Check pending submissions
+      updatePendingCount();
     }
   }, [navigate]);
+
+  const updatePendingCount = () => {
+    const pending = storage.getPendingSubmissions();
+    setPendingCount(pending.length);
+  };
 
   const initializeClasses = () => {
     // Primary school example (grades 1-5)
@@ -125,6 +135,44 @@ const Home = () => {
         return orderA.localeCompare(orderB);
       })
     : [...downloadedClasses, ...notDownloadedClasses];
+
+  const handleUploadPending = async () => {
+    const pending = storage.getPendingSubmissions();
+    
+    if (pending.length === 0) {
+      toast({
+        title: "No Pending Data",
+        description: "There are no pending submissions to upload"
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    
+    try {
+      let successCount = 0;
+      for (const submission of pending) {
+        await mockApi.submitAttendance(submission);
+        successCount++;
+      }
+      
+      storage.clearPendingSubmissions();
+      updatePendingCount();
+      
+      toast({
+        title: "Upload Complete",
+        description: `Successfully uploaded ${successCount} attendance record(s)`
+      });
+    } catch (error) {
+      toast({
+        title: "Upload Failed",
+        description: "Failed to upload some attendance records",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const toggleOnlineMode = () => {
     const newMode = !isOnline;
@@ -255,19 +303,38 @@ const Home = () => {
                   </div>
                   
                   {isDownloaded && isOnline ? (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDownload(classId)}
-                      disabled={isLoading}
-                      className="h-8 w-8 md:h-9 md:w-9 p-0"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
-                      ) : (
-                        <RefreshCw className="h-3 w-3 md:h-4 md:w-4" />
+                    <div className="flex items-center gap-1">
+                      {pendingCount > 0 && (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={handleUploadPending}
+                          disabled={isUploading}
+                          className="h-8 md:h-9 gap-1 text-xs"
+                        >
+                          {isUploading ? (
+                            <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                          ) : (
+                            <Upload className="h-3 w-3 md:h-4 md:w-4" />
+                          )}
+                          <span className="hidden sm:inline">Upload ({pendingCount})</span>
+                          <span className="sm:hidden">{pendingCount}</span>
+                        </Button>
                       )}
-                    </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDownload(classId)}
+                        disabled={isLoading}
+                        className="h-8 w-8 md:h-9 md:w-9 p-0"
+                      >
+                        {isLoading ? (
+                          <Loader2 className="h-3 w-3 md:h-4 md:w-4 animate-spin" />
+                        ) : (
+                          <RefreshCw className="h-3 w-3 md:h-4 md:w-4" />
+                        )}
+                      </Button>
+                    </div>
                   ) : !isDownloaded && (
                     <Button
                       size="sm"
