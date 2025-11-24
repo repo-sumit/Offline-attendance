@@ -317,7 +317,7 @@ const Home = () => {
                           ) : (
                             <Upload className="h-3 w-3 md:h-4 md:w-4" />
                           )}
-                          <span className="hidden sm:inline">Upload ({pendingCount})</span>
+                          <span className="hidden sm:inline">Sync ({pendingCount})</span>
                           <span className="sm:hidden">{pendingCount}</span>
                         </Button>
                       )}
