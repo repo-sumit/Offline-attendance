@@ -193,7 +193,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-3 md:p-4 sticky top-0 z-10 shadow-md">
+      <div className="bg-primary text-primary-foreground p-3 md:p-4 shadow-md">
         <div className="max-w-2xl mx-auto space-y-2 md:space-y-3">
           <div className="flex items-center justify-between">
             <h1 className="text-lg md:text-xl font-bold">Attendance</h1>
