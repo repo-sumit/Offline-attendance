@@ -17,7 +17,7 @@ const Home = () => {
   const [school, setSchool] = useState<School | null>(null);
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [loadingClass, setLoadingClass] = useState<string | null>(null);
-  const [isOnline, setIsOnline] = useState(true); // Manual toggle for demo
+  const [isOnline, setIsOnline] = useState(() => storage.getOnlineMode());
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -127,10 +127,16 @@ const Home = () => {
     : [...downloadedClasses, ...notDownloadedClasses];
 
   const toggleOnlineMode = () => {
-    setIsOnline(!isOnline);
+    const newMode = !isOnline;
+    setIsOnline(newMode);
+    storage.setOnlineMode(newMode);
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('onlineModeChange', { detail: { isOnline: newMode } }));
+    
     toast({
-      title: isOnline ? "Offline Mode" : "Online Mode",
-      description: isOnline ? "You are now in offline mode for testing" : "You are now back online"
+      title: newMode ? "Online Mode" : "Offline Mode",
+      description: newMode ? "You are now back online" : "You are now in offline mode for testing"
     });
   };
 

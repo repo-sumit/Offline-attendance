@@ -58,6 +58,15 @@ export const storage = {
     localStorage.setItem(STORAGE_KEYS.PENDING_SUBMISSIONS, JSON.stringify([]));
   },
 
+  // Online/Offline Mode
+  setOnlineMode: (isOnline: boolean) => {
+    localStorage.setItem(STORAGE_KEYS.IS_ONLINE, JSON.stringify(isOnline));
+  },
+  getOnlineMode: (): boolean => {
+    const data = localStorage.getItem(STORAGE_KEYS.IS_ONLINE);
+    return data ? JSON.parse(data) : true; // Default to online
+  },
+
   // Clear all
   clearAll: () => {
     Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
