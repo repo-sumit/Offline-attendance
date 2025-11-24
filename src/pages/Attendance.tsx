@@ -45,35 +45,44 @@ const Attendance = () => {
       return;
     }
 
-    const classes = storage.getClasses();
     const grade = classId.charAt(0);
     const section = classId.charAt(1);
+    const classes = storage.getClasses();
     const foundClass = classes.find(c => c.grade === grade && c.section === section);
 
-    if (!foundClass) {
-      toast({
-        title: "Class Not Found",
-        description: "Class data not available",
-        variant: "destructive"
-      });
-      navigate('/home');
-      return;
-    }
-
     // In offline mode, class must be downloaded
-    if (!isOnline && !foundClass.isDownloaded) {
-      toast({
-        title: "Download Required",
-        description: "Please download the class for offline use",
-        variant: "destructive"
-      });
-      navigate('/home');
-      return;
+    if (!isOnline) {
+      if (!foundClass || !foundClass.isDownloaded) {
+        toast({
+          title: "Download Required",
+          description: "Please download the class for offline use",
+          variant: "destructive"
+        });
+        navigate('/home');
+        return;
+      }
+      setClassData(foundClass);
+      setStudents(foundClass.students);
+    } else {
+      // In online mode, fetch students from API if not in storage
+      if (foundClass) {
+        setClassData(foundClass);
+        setStudents(foundClass.students);
+      } else {
+        // Fetch from API
+        mockApi.fetchClassStudents(grade, section).then((fetchedStudents) => {
+          const newClassData: ClassData = {
+            grade,
+            section,
+            students: fetchedStudents,
+            isDownloaded: false
+          };
+          setClassData(newClassData);
+          setStudents(fetchedStudents);
+        });
+      }
     }
-
-    setClassData(foundClass);
-    setStudents(foundClass.students);
-  }, [classId, navigate, toast]);
+  }, [classId, navigate, toast, isOnline]);
 
   const toggleAttendance = (studentId: string) => {
     setStudents(prev =>
