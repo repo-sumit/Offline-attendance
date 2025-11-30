@@ -1,6 +1,6 @@
 
 
-# 🚀 Maha-Vision-Project  
+# 🚀 Offline Attendance
 _A lightweight, resilient, offline-first attendance & meal-tracking mini-app for Maharashtra schools_  
 
 [Live Demo → ](https://maha-vision-project.lovable.app)  
